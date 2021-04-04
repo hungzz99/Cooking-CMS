@@ -1,0 +1,14 @@
+.col th, td {
+    text-align: center;
+    margin-top: 5px!important;
+}
+.icon {
+    margin: 3px 3px 3px 3px;
+}
+.border-bottom span {
+    text-align: right;
+}
+.button-icon {
+    background-color: white;
+    border: none;
+}
