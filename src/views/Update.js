@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect } from "shards-react";
 import { Link } from "react-router-dom";
 import PageTitle from "../components/common/PageTitle";
-import RangeDatePicker from "../components/common/RangeDatePicker";
 import './views.css';
 const Update = () => (
   <Container fluid className="main-content-container px-4 pb-4">
