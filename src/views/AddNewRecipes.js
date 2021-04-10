@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, F
 
 import PageTitle from "../components/common/PageTitle";
 import './views.css';
-const AddNewPromotional = () => (
+const AddNewRecipes = () => (
   <Container fluid className="main-content-container px-4 pb-4">
     {/* Page Header */}
     <Row noGutters className="page-header py-4">
@@ -19,16 +19,18 @@ const AddNewPromotional = () => (
                 <Row form>
                   {/* First Name */}
                   <Col md="6" className="form-group">
-                    <label htmlFor="feFirstName">Tittle</label>
+                    <label htmlFor="feFirstName">Tittle
+                    <span className="span-color"> *</span></label>
                     <FormInput
                       placeholder="Tittle*"
                       onChange={() => { }}
                     />
                   </Col>
                   <Col md="6" className="form-group">
-                      <label htmlFor="feFirstName">Type </label>
+                      <label htmlFor="feFirstName">Type
+                      <span className="span-color"> *</span> </label>
                       <FormSelect id="feInputState">
-                        <option>-Choose Types*- </option>
+                        <option>-Choose Types- </option>
                         <option>Healthy Recipes </option>
                         <option>Easy Recipes</option>
                         <option>Daily Recipes</option>
@@ -39,13 +41,15 @@ const AddNewPromotional = () => (
                 </Row>
                 <Row form>
                   <Col md="12" className="form-group">
-                    <label htmlFor="feDescription">Ingredients</label>
+                    <label htmlFor="feDescription">Ingredients
+                    <span className="span-color"> *</span></label>
                     <FormTextarea id="feDescription" rows="3" />
                   </Col>
                 </Row>
                 <Row form>
                   <Col md="12" className="form-group">
-                    <label htmlFor="feDescription">Preparation</label>
+                    <label htmlFor="feDescription">Preparation
+                    <span className="span-color"> *</span></label>
                     <FormTextarea id="feDescription" rows="3" />
                   </Col>
                 </Row>
@@ -53,14 +57,16 @@ const AddNewPromotional = () => (
                 <Row form>
                   {/* Description */}
                   <Col md="2" className="form-group">
-                    <label htmlFor="feDescription">Picture</label>
+                    <label htmlFor="feDescription">Picture
+                    <span className="span-color"> *</span></label>
                     <FormTextarea id="feDescription" rows="5" />
                   </Col>
                 </Row>
                 <Button theme="accent">Select Picture</Button>
                 <Row form>
                 <Col md="6" className="form-group">
-                    <label htmlFor="feLastName">Time*</label>
+                    <label htmlFor="feLastName">Time
+                    <span className="span-color"> *</span></label>
                     <FormInput
                       placeholder="Time*"
                       onChange={() => { }}
@@ -77,4 +83,4 @@ const AddNewPromotional = () => (
   </Container>
 );
 
-export default AddNewPromotional;
+export default AddNewRecipes;

@@ -5,26 +5,33 @@ import { Redirect } from "react-router-dom";
 import { DefaultLayout } from "./layouts";
 
 // Route Views
-import PromotionalList from "../src/views/PromotionalList";
-import AddNewPromotional from "../src/views/AddNewPromotional";
+import PromotionalList from "./views/RecipesManager";
+import AddNewRecipes from "./views/AddNewRecipes";
 import Detail from "./views/Detail";
 import Update from "../src/views/Update";
+import {Undefine} from "./layouts";
+import login from "../src/views/Login";
 export default [
   {
     path: "/",
     exact: true,
-    layout: DefaultLayout,
-    component: () => <Redirect to="/promotional-list" />
+    layout: Undefine,
+    component: () => <Redirect to="/login" />
   },
   {
-    path: "/promotional-list",
+    path: "/login",
+    layout: Undefine,
+    component: login
+  },
+  {
+    path: "/recipes-manager",
     layout: DefaultLayout,
     component: PromotionalList
   },
   {
-    path: "/add-new-promotional",
+    path: "/add-new-recipes",
     layout: DefaultLayout,
-    component: AddNewPromotional
+    component: AddNewRecipes
   },
   {
     path: "/details",

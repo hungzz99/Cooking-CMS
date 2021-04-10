@@ -1,15 +1,15 @@
 export default function() {
   return [
     {
-      title: "Promotional List",
-      to: "/promotional-list",
+      title: "Recipes Manager",
+      to: "/recipes-manager",
       htmlBefore: '<i class="material-icons">list</i>',
       htmlAfter: ""
     },
     {
-      title: "Add New Promotional",
+      title: "Add New Recipes",
       htmlBefore: '<i class="material-icons">add</i>',
-      to: "/add-new-promotional",
+      to: "/add-new-recipes",
     }
   ];
 }

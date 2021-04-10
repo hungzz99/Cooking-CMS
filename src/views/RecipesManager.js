@@ -10,7 +10,7 @@ import './views.css';
 import firebase from 'firebase';
 import ItemList from '../components/list-item/ItemList'
 
-class PromotionalList extends Component {
+class RecipesManager extends Component {
 
   constructor(props) {
     super(props);
@@ -61,7 +61,7 @@ class PromotionalList extends Component {
                           Image
                   </th>
                         <th scope="col" className="border-0">
-                          Time
+                          Cooking Times
                   </th>
                         <th scope="col" className="border-0">
                           Actions
@@ -102,4 +102,4 @@ class PromotionalList extends Component {
     );
   }
 }
-export default PromotionalList;
+export default RecipesManager;
