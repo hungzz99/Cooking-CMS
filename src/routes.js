@@ -11,6 +11,7 @@ import Detail from "./views/Detail";
 import Update from "../src/views/Update";
 import {Undefine} from "./layouts";
 import login from "../src/views/Login";
+import privateComponet from "../src/components/PrivateComponent/PrivateComponent"
 export default [
   {
     path: "/",
@@ -26,7 +27,8 @@ export default [
   {
     path: "/recipes-manager",
     layout: DefaultLayout,
-    component: PromotionalList
+    component: privateComponet(PromotionalList)
+    // component: PromotionalList
   },
   {
     path: "/add-new-recipes",
