@@ -1,91 +1,179 @@
-import React from "react";
+import React, { Component } from "react";
 import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect } from "shards-react";
 import { Link } from "react-router-dom";
 import PageTitle from "../components/common/PageTitle";
+import { useParams } from 'react-router-dom';
 import './views.css';
-const Update = () => (
-  <Container fluid className="main-content-container px-4 pb-4">
-    {/* Page Header */}
-    <Row noGutters className="page-header py-4">
-      <PageTitle sm="4" title="Update Recipes" subtitle="" className="text-sm-left" />
-    </Row>
+import firebase from 'firebase';
 
-    <Card small className="mb-4">
-      <ListGroup flush>
-        <ListGroupItem className="p-3">
-          <Row>
-            <Col>
-              <Form>
-                <Row form>
-                  {/* First Name */}
-                  <Col md="6" className="form-group">
-                    <label htmlFor="feFirstName">Tittle</label>
-                    <FormInput
-                      placeholder="Tittle*"
-                      onChange={() => { }}
-                    />
-                  </Col>
-                  <Col md="6" className="form-group">
-                    <label htmlFor="feFirstName">Type </label>
-                    <FormSelect id="feInputState">
-                      <option>-Choose Types*- </option>
-                      <option>Healthy Recipes </option>
-                      <option>Easy Recipes</option>
-                      <option>Daily Recipes</option>
-                      <option>Occasions Recipes</option>
-                    </FormSelect>
-                  </Col>
+class Update extends Component {
 
-                </Row>
-                <Row form>
-                  <Col md="12" className="form-group">
-                    <label htmlFor="feDescription">Ingredients</label>
-                    <FormTextarea id="feDescription" rows="3" />
-                  </Col>
-                </Row>
-                <Row form>
-                  <Col md="12" className="form-group">
-                    <label htmlFor="feDescription">Preparation</label>
-                    <FormTextarea id="feDescription" rows="3" />
-                  </Col>
-                </Row>
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: "",
+      type: "",
+      ingredient: "",
+      preparation: "",
+      people: "",
+      time: "",
+      pictureUrl: "",
+    };
+    this.onClick = this.onClick.bind(this);
+    this.onChange = this.onChange.bind(this)
+  }
 
-                <Row form>
-                  {/* Description */}
-                  <Col md="2" className="form-group">
-                    <label htmlFor="feDescription">Picture</label>
-                    <FormTextarea id="feDescription" rows="5" />
-                  </Col>
-                </Row>
-                <Button theme="accent">Select Picture</Button>
-                <Row form>
-                  <Col md="6" className="form-group">
-                    <label htmlFor="feLastName">Time*</label>
-                    <FormInput
-                      placeholder="Time*"
-                      onChange={() => { }}
-                    />
-                  </Col>
-                </Row>
-                <ListGroupItem className="d-flex px-3 border-0">
-                  <Link to="/promotional-list">
-                    <Button outline theme="accent" size="sm">
-                      <i className="material-icons">fast_rewind</i> Turn Back
-                  </Button>
-                  </Link>
+  componentDidMount() {
+    firebase.database().ref(`posts/${this.props.postId}`).get().then(snapshot => {
+      if (snapshot.exists()) {
+        this.setState({
+          title: snapshot.val().title,
+          type: snapshot.val().type,
+          ingredient: snapshot.val().ingredient,
+          preparation: snapshot.val().preparation,
+          people: snapshot.val().people,
+          time: snapshot.val().time,
+          pictureUrl: snapshot.val().photoUrl,
+        })
+      }
+    })
+  }
 
-                  <Button theme="accent" size="sm" className="ml-auto">
-                    <i className="material-icons">file_copy</i> Update Recipe
-                  </Button>
+  onClick(e) {
+    e.preventDefault();
+    this.updatePost()
+  }
 
-                </ListGroupItem>
-              </Form>
-            </Col>
-          </Row>
-        </ListGroupItem>
-      </ListGroup>
-    </Card>
-  </Container>
-);
+  updatePost() {
+    var newPost = {
+      ingredient: this.state.ingredient,
+      like: 0,
+      people: this.state.people,
+      postId: this.props.postId,
+      title: this.state.title,
+      type: this.state.type,
+      preparation: this.state.preparation,
+      time: this.state.time,
+      photoUrl: this.state.pictureUrl,
+    };
+    var update = {}
+    update[`posts/${this.props.postId}`] = newPost;
+    console.log(update);
+    firebase.database().ref().update(update, () => this.onUpdateSuccess())
+  }
 
-export default Update;
+  onUpdateSuccess() {
+    // Update UI to notify update success
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  render() {
+    console.log(this.state)
+    return (
+      <Container fluid className="main-content-container px-4 pb-4">
+        {/* Page Header */}
+        <Row noGutters className="page-header py-4">
+          <PageTitle sm="4" title="Update Recipes" subtitle="" className="text-sm-left" />
+        </Row>
+
+        <Card small className="mb-4">
+          <ListGroup flush>
+            <ListGroupItem className="p-3">
+              <Row>
+                <Col>
+                  <Form>
+                    <Row form>
+                      {/* First Name */}
+                      <Col md="6" className="form-group">
+                        <label htmlFor="feFirstName">Tittle</label>
+                        <FormInput
+                          name="title"
+                          placeholder="Tittle*"
+                          value={this.state.title}
+                          onChange={this.onChange}
+                        />
+                      </Col>
+                      <Col md="6" className="form-group">
+                        <label htmlFor="feFirstName">Type </label>
+                        <FormSelect id="feInputState" value={this.state.type}>
+                          <option>-Choose Types*- </option>
+                          <option>Healthy</option>
+                          <option>Easy</option>
+                          <option>Daily</option>
+                          <option>Occasions</option>
+                        </FormSelect>
+                      </Col>
+
+                    </Row>
+                    <Row form>
+                      <Col md="12" className="form-group">
+                        <label htmlFor="feDescription">Ingredients</label>
+                        <FormTextarea id="feDescription" rows="3" onChange={this.onChange} value={this.state.ingredient} />
+                      </Col>
+                    </Row>
+                    <Row form>
+                      <Col md="12" className="form-group">
+                        <label htmlFor="feDescription">Preparation</label>
+                        <FormTextarea id="feDescription" rows="3" value={this.state.preparation} />
+                      </Col>
+                    </Row>
+
+                    <Row form>
+                      {/* Description */}
+                      <Col md="2" className="form-group">
+                        <label htmlFor="feDescription">Picture</label>
+                        <FormTextarea id="feDescription" rows="5" />
+                      </Col>
+                    </Row>
+                    <Button theme="accent">Select Picture</Button>
+                    <Row form>
+                      <Col md="6" className="form-group">
+                        <label htmlFor="feLastName">Time* (minutes)</label>
+                        <FormInput
+                          placeholder="Time*"
+                          value={this.state.time}
+                          onChange={() => { }}
+                        />
+                      </Col>
+                    </Row>
+                    <Row form>
+                      <Col md="6" className="form-group">
+                        <label htmlFor="feLastName">People</label>
+                        <FormInput
+                          placeholder="People"
+                          value={this.state.people}
+                          onChange={() => { }}
+                        />
+                      </Col>
+                    </Row>
+                    <ListGroupItem className="d-flex px-3 border-0">
+                      <Link to="/recipes-manager">
+                        <Button outline theme="accent" size="sm">
+                          <i className="material-icons">fast_rewind</i> Turn Back
+                        </Button>
+                      </Link>
+                      <Button theme="accent" size="sm" className="ml-auto" onClick={this.onClick}>
+                        <i className="material-icons" >file_copy</i> Update Recipe
+                      </Button>
+                    </ListGroupItem>
+                  </Form>
+                </Col>
+              </Row>
+            </ListGroupItem>
+          </ListGroup>
+        </Card>
+      </Container>
+    )
+  }
+}
+
+function withUpdatesHook(Component) {
+  return function WrappedComponent(props) {
+    const myHookValue = useParams();
+    return <Component {...props} postId={myHookValue.id} />
+  }
+}
+export default withUpdatesHook(Update);

@@ -36,12 +36,12 @@ export default [
     component: AddNewRecipes
   },
   {
-    path: "/details",
+    path: "/details/:id",
     layout: DefaultLayout,
     component: Detail
   },
   {
-    path: "/update",
+    path: "/update/:id",
     layout: DefaultLayout,
     component: Update
   }

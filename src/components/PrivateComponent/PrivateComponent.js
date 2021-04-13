@@ -25,12 +25,14 @@ function RequireAdmin(ComposedComponent) {
         }
 
         routing() {
+            // routing to suitable page
             if (!this.state.isLogin) {
-                history.push('/login');
+                // history.push('/login');
             }
         }
 
         render() {
+            
             return <ComposedComponent />;
         }
     }

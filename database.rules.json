@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "posts": {
+      	".read": true,
+        ".write": true,
+        // ".write": "newData.parent().child('users').child(auth.uid).child('admin').val() == true",
+        ".indexOn": "type",
+    },
+    "comments": {
+      ".read": true,
+      ".indexOn": "postId",
+      ".write": "auth != null"
+    },
+    "users": {
+      ".read": true,
+      ".write": "auth != null && newData.val() != data.val()",
+    }
+  }
+}

@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Card, CardHeader, CardBody, CardImg, Button } from "shards-react";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { Container, Row, Col, Card, CardHeader, CardBody } from "shards-react";
 import PageTitle from "../components/common/PageTitle";
 import './views.css';
 import firebase from 'firebase';
@@ -15,22 +10,44 @@ class RecipesManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: []
+      posts: null,
+      latestPostId: null
     };
   }
 
   componentDidMount() {
+    this.getAllPost()
+  }
+
+  getLatestPost() {
+    const db = firebase.database().ref("posts").limitToLast(1)
+    db.get().then(snapshot => {
+      this.setState({
+        latestPostId: snapshot.val().postId
+      })
+    }, () => this.getAllPost())
+  }
+
+  getAllPost() {
     let posts = [];
     const db = firebase.database().ref("posts")
-    db.on('child_added', (post) => {
-      posts.push(post.val())
-      this.setState({ posts: posts });
+    db.on('value', (snapshots) => {
+      posts = [];
+      snapshots.forEach(post => {
+        posts.push(post.val())
+        this.setState({
+          posts: posts
+        })
+      })
     });
   }
 
 
   render() {
-    const item = this.state.posts.map(post => <ItemList key={post.postId} post={post} />)
+    console.log(this.state.posts);
+    const item = (this.state.posts == null) ? <p>Loading...</p> : this.state.posts.map(post => {
+      return(<ItemList key={post.postId} post={post} />)
+    });
     return (
       <>
         <Container fluid className="main-content-container px-4">
@@ -77,27 +94,7 @@ class RecipesManager extends Component {
             </Col>
           </Row>
         </Container>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Recipes List Notification"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {this.state.content}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="success">
-              Cancel
-          </Button>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
-              Agree
-          </Button>
-          </DialogActions>
-        </Dialog>
+
       </>
     );
   }
