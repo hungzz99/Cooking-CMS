@@ -17,24 +17,12 @@ let firebaseConfig = {
     measurementId: "G-M344EL3XNC"
 };
 
-if (window.location.hostname === 'localhost') {
-    firebaseConfig = {
-        apiKey: "AIzaSyDcv40AZwEIt7rcOeUk6kxU_mNnbIzE_J4",
-        projectId: "cooking-forum",
-        storageBucket: "cooking-forum.appspot.com",
-        messagingSenderId: "188904882071",
-        appId: "1:188904882071:web:1bf4e9bcd70a07c0d00ed2",
-        measurementId: "G-M344EL3XNC",
-        databaseURL: 'http://localhost:9000/?ns=cooking-forum-default-rtdb',
-        authDomain: 'http://localhost:9099'
-    }
-}
-
 firebase.initializeApp(firebaseConfig);
 
 if (window.location.hostname === 'localhost') {
     firebase.auth().useEmulator('http://localhost:9099');
-    firebase.database().useEmulator("localhost", 9000)
+    firebase.database().useEmulator("localhost", 9000);
+    firebase.functions.useEmulator('localhost', 5001)
 }
 
 

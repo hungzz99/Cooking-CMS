@@ -31,7 +31,6 @@ class Details extends Component {
     }
 
     getPostInfo() {
-        console.log("geting Info");
         const db = firebase.database()
         db.ref(`posts/${this.props.postId}`).on('value', snapshot => {
             if (snapshot.exists) {

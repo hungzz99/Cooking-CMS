@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
+import Login from '../../views/Login'
 
 //This function receives the Component that only some user should access
 function RequireAdmin(ComposedComponent) {
@@ -8,7 +9,7 @@ function RequireAdmin(ComposedComponent) {
         constructor(props) {
             super(props);
             this.state = {
-                isLogin: true
+                isLogin: false
             }
         }
 
@@ -23,9 +24,7 @@ function RequireAdmin(ComposedComponent) {
         }
 
         routing() {
-            // routing to suitable page
-            console.log(this.state.isLogin, 111)
-            if (!this.state.isLogin) {
+            if (!this.state.isLogin && ComposedComponent != Login) {
                 window.location.href = '/login';
             }
         }

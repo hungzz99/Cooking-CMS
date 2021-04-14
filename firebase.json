@@ -4,6 +4,11 @@
   },
   "hosting": {
     "public": "build",
+    "target": "cms",
+    "rewrites": [ {
+      "source": "**",
+      "destination": "/index.html"
+     }],
     "ignore": [
       "firebase.json",
       "**/.*",

@@ -44,7 +44,6 @@ class RecipesManager extends Component {
 
 
   render() {
-    console.log(this.state.posts);
     const item = (this.state.posts == null) ? <p>Loading...</p> : this.state.posts.map(post => {
       return(<ItemList key={post.postId} post={post} />)
     });

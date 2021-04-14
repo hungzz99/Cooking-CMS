@@ -11,18 +11,19 @@ import Detail from "./views/Detail";
 import Update from "../src/views/Update";
 import {Undefine} from "./layouts";
 import login from "../src/views/Login";
-import privateComponet from "../src/components/PrivateComponent/PrivateComponent"
+import privateComponet from "../src/components/PrivateComponent/PrivateComponent";
+
 export default [
   {
     path: "/",
     exact: true,
     layout: Undefine,
-    component: () => <Redirect to="/login" />
+    component: () => { return (<Redirect to="/recipes-manager" />) }
   },
   {
     path: "/login",
     layout: Undefine,
-    component: login
+    component: privateComponet(login)
   },
   {
     path: "/recipes-manager",
@@ -33,16 +34,16 @@ export default [
   {
     path: "/add-new-recipes",
     layout: DefaultLayout,
-    component: AddNewRecipes
+    component: privateComponet(AddNewRecipes)
   },
   {
     path: "/details/:id",
     layout: DefaultLayout,
-    component: Detail
+    component: privateComponet(Detail)
   },
   {
     path: "/update/:id",
     layout: DefaultLayout,
-    component: Update
+    component: privateComponet(Update)
   }
 ];

@@ -11,12 +11,12 @@ class Update extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
-      type: "",
-      ingredient: "",
-      preparation: "",
-      people: "",
-      time: "",
+      title: "Loading...",
+      type: "Loading...",
+      ingredient: "Loading...",
+      preparation: "Loading...",
+      people: "Loading...",
+      time: "Loading...",
       pictureUrl: "",
     };
     this.onClick = this.onClick.bind(this);
@@ -59,11 +59,16 @@ class Update extends Component {
     var update = {}
     update[`posts/${this.props.postId}`] = newPost;
     console.log(update);
-    firebase.database().ref().update(update, () => this.onUpdateSuccess())
+    firebase.database().ref().update(update).then(() => {
+      this.onUpdateSuccess();
+    }).catch((error) => {
+      console.log(`Update Fail! Error: ${error}`);
+    })
   }
 
   onUpdateSuccess() {
     // Update UI to notify update success
+    console.log("Update Successful");
   }
 
   onChange(e) {
@@ -71,7 +76,6 @@ class Update extends Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <Container fluid className="main-content-container px-4 pb-4">
         {/* Page Header */}
@@ -98,12 +102,12 @@ class Update extends Component {
                       </Col>
                       <Col md="6" className="form-group">
                         <label htmlFor="feFirstName">Type </label>
-                        <FormSelect id="feInputState" value={this.state.type}>
-                          <option>-Choose Types*- </option>
-                          <option>Healthy</option>
-                          <option>Easy</option>
-                          <option>Daily</option>
-                          <option>Occasions</option>
+                        <FormSelect id="feInputState" value={this.state.type} name="type" onChange={this.onChange}>
+                          <option value="">-Choose Types*- </option>
+                          <option value="Healthy">Healthy</option>
+                          <option value="Easy">Easy</option>
+                          <option value="Daily">Daily</option>
+                          <option value="Occasions">Occasions</option>
                         </FormSelect>
                       </Col>
 
@@ -135,7 +139,7 @@ class Update extends Component {
                         <FormInput
                           placeholder="Time*"
                           value={this.state.time}
-                          onChange={() => { }}
+                          onChange={this.onChange}
                         />
                       </Col>
                     </Row>
@@ -145,7 +149,7 @@ class Update extends Component {
                         <FormInput
                           placeholder="People"
                           value={this.state.people}
-                          onChange={() => { }}
+                          onChange={this.onChange}
                         />
                       </Col>
                     </Row>

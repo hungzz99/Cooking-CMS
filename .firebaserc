@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "cooking-forum"
+  },
+  "targets": {
+    "cooking-forum": {
+      "hosting": {
+        "cms": [
+          "cms-cookies"
+        ]
+      }
+    }
   }
 }
