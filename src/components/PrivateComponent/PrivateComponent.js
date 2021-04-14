@@ -9,16 +9,24 @@ function RequireAdmin(ComposedComponent) {
         constructor(props) {
             super(props);
             this.state = {
-                isLogin: false
+                isAdmin: false
             }
         }
 
         componentWillMount() {
             firebase.auth().onAuthStateChanged(user => {
                 if (user != null) {
-                    this.setState({ isLogin: true }, () => {this.routing()});
+                    firebase.database().ref(`users/${user.uid}/admin`).get().then((admin) => {
+                        if (admin.val()) {
+                            this.setState({ isLogin: true }, () => {this.routing()});
+                        } else {
+                            this.setState({ isLogin: false }, () => {this.routing()});
+                        }
+                    }).catch((error) => {
+                        console.log(`Fail to get data! Error: ${error}`);
+                    })
                 } else {
-                    this.setState({ isLogin: false }, () => {this.routing()});
+                    this.setState({ isAdmin: false }, () => {this.routing()});
                 };
             });
         }
