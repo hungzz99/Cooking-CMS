@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   Form,
   InputGroup,
@@ -6,8 +6,11 @@ import {
   InputGroupText,
   FormInput
 } from "shards-react";
+import {
+  connectSearchBox
+} from 'react-instantsearch-dom';
 
-export default () => (
+const SearchBox = ({ currentRefinement, refine }) => (
   <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
     <InputGroup seamless className="ml-3">
       <InputGroupAddon type="prepend">
@@ -16,9 +19,29 @@ export default () => (
         </InputGroupText>
       </InputGroupAddon>
       <FormInput
+        type="search"
+        value={currentRefinement}
+        onChange={event => refine(event.currentTarget.value)}
         className="navbar-search"
         placeholder="Search for something..."
       />
     </InputGroup>
   </Form>
 );
+const CustomSearchBox = connectSearchBox(SearchBox);
+class NavbarSearch extends Component {
+
+  render() {
+    if (window.location.pathname === '/recipes-manager') {
+      return(
+        <SearchBox />
+      )
+    } else {
+      return(
+        <></>
+      )
+    }
+  }
+}
+
+export default NavbarSearch;

@@ -9,18 +9,20 @@ function RequireAdmin(ComposedComponent) {
         constructor(props) {
             super(props);
             this.state = {
+                isLoading: true,
                 isAdmin: false
             }
+            this.checkAuth();
         }
 
-        componentWillMount() {
+        checkAuth() {
             firebase.auth().onAuthStateChanged(user => {
                 if (user != null) {
                     firebase.database().ref(`users/${user.uid}/admin`).get().then((admin) => {
                         if (admin.val()) {
-                            this.setState({ isLogin: true }, () => {this.routing()});
+                            this.setState({ isAdmin: true }, () => {this.routing()});
                         } else {
-                            this.setState({ isLogin: false }, () => {this.routing()});
+                            this.setState({ isAdmin: false }, () => {this.routing()});
                         }
                     }).catch((error) => {
                         console.log(`Fail to get data! Error: ${error}`);
@@ -32,14 +34,19 @@ function RequireAdmin(ComposedComponent) {
         }
 
         routing() {
-            if (!this.state.isLogin && ComposedComponent != Login) {
-                window.location.href = '/login';
+            if (!this.state.isAdmin && ComposedComponent != Login) {
+                firebase.auth().signOut();
+                window.location.href = '/login'
+            } else {
+                this.setState({
+                    isLoading: false
+                })
             }
         }
 
         render() {
-            
-            return <ComposedComponent />;
+            if (this.state.isLoading) {return(<></>)}
+            else {return(<ComposedComponent />)}
         }
     }
 

@@ -1,52 +1,30 @@
 import React, { Component } from "react";
+import algoliasearch from 'algoliasearch/lite';
+import {
+  connectHits
+} from 'react-instantsearch-dom';
 import { Container, Row, Col, Card, CardHeader, CardBody } from "shards-react";
 import PageTitle from "../components/common/PageTitle";
 import './views.css';
-import firebase from 'firebase';
 import ItemList from '../components/list-item/ItemList'
+
+
+const Hits = ({ hits }) => (
+  <>
+    {hits.map(hit => (
+      <ItemList key={hit.objectID} post={hit}/>
+    ))}
+  </>
+);
+const CustomHits = connectHits(Hits);
 
 class RecipesManager extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      posts: null,
-      latestPostId: null
-    };
   }
-
-  componentDidMount() {
-    this.getAllPost()
-  }
-
-  getLatestPost() {
-    const db = firebase.database().ref("posts").limitToLast(1)
-    db.get().then(snapshot => {
-      this.setState({
-        latestPostId: snapshot.val().postId
-      })
-    }, () => this.getAllPost())
-  }
-
-  getAllPost() {
-    let posts = [];
-    const db = firebase.database().ref("posts")
-    db.on('value', (snapshots) => {
-      posts = [];
-      snapshots.forEach(post => {
-        posts.push(post.val())
-        this.setState({
-          posts: posts
-        })
-      })
-    });
-  }
-
 
   render() {
-    const item = (this.state.posts == null) ? <p>Loading...</p> : this.state.posts.map(post => {
-      return(<ItemList key={post.postId} post={post} />)
-    });
     return (
       <>
         <Container fluid className="main-content-container px-4">
@@ -85,7 +63,7 @@ class RecipesManager extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {item}
+                        <CustomHits />
                     </tbody>
                   </table>
                 </CardBody>
@@ -93,9 +71,9 @@ class RecipesManager extends Component {
             </Col>
           </Row>
         </Container>
-
       </>
     );
   }
 }
+
 export default RecipesManager;

@@ -45,19 +45,52 @@ exports.updateUserDb = functions.database.ref(`/users/{userId}`).onCreate((snaps
         .getUser(context.params.userId)
         .then((userRecord) => {
             // See the UserRecord reference doc for the contents of userRecord.
+            let name = "";
+            if (userRecord.displayName != null) name = userRecord.displayName;
+            let photo = "https://firebasestorage.googleapis.com/v0/b/cooking-forum.appspot.com/o/userProfileImage%2Fuser_profile_placeholder.png?alt=media&token=4e9824f7-99cd-4907-8c20-b339b8bd07e7";
+            if (userRecord.photoURL != "") photo = userRecord.photoURL;
+
             const newUser = {
-                name: userRecord.displayName,
-                photo: userRecord.photoURL,
+                name: name,
+                photo: photo,
                 admin: false
             }
-            admin.database().ref(`/users/${context.params.userId}`).set(newUser).then(() => {
-                console.log(`User save!`);
-            }).catch((error) => {
-                console.log(`User not save!`);
-            })
-            console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+
+            admin
+                .auth()
+                .updateUser(context.params.userId, {
+                    emailVerified: true,
+                    displayName: name,
+                    photoURL: photo,
+                })
+                .then((userRecord) => {
+                    console.log(newUser);
+                    admin.database().ref(`/users/${context.params.userId}`).set(newUser).then(() => {
+                        console.log(`User ${context.params.userId} save!`);
+                        return true;
+                    }).catch((error) => {
+                        console.log(`User ${context.params.userId} not save!`);
+                        return false;
+                    })
+                })
+                .catch((error) => {
+                    console.log('Error updating user:', error);
+                });
+
+
         })
         .catch((error) => {
             console.log('Error fetching user data:', error);
+            return false
         });
 })
+
+exports.deleteuser = functions.auth.user().onDelete((user) => {
+    admin.database().ref(`/users/${user.uid}`).remove().then(() => {
+        console.log(`Success delete user to database!`);
+        return true;
+    }).catch((error) => {
+        console.log(`Fail to delete user to database! Error: ${error}`);
+        return false;
+    })
+});

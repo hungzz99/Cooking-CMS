@@ -48,7 +48,6 @@ class Details extends Component {
     }
 
     render() {
-        console.log(this.state);
         return (
             <Card small className="mb-3">
                 <CardHeader className="border-bottom">
@@ -99,7 +98,7 @@ class Details extends Component {
 
                         </ListGroupItem>
                         <ListGroupItem className="d-flex px-3 border-0">
-                            <Link to="/promotional-list">
+                            <Link to="/recipes-manager">
                                 <Button outline theme="accent" size="sm">
                                     <i className="material-icons">fast_rewind</i> Turn Back
                         </Button>
