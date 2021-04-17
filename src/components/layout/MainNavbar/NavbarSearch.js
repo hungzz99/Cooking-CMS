@@ -11,11 +11,11 @@ import {
 } from 'react-instantsearch-dom';
 
 const SearchBox = ({ currentRefinement, refine }) => (
-  <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
+  <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex" onSubmit={(e) => { e.preventDefault(); }}>
     <InputGroup seamless className="ml-3">
       <InputGroupAddon type="prepend">
         <InputGroupText>
-          <i className="material-icons">search</i>
+          <i className="material-icons" >search</i>
         </InputGroupText>
       </InputGroupAddon>
       <FormInput
