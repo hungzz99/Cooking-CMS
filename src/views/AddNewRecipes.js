@@ -133,6 +133,7 @@ class AddNewRecipes extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">People</label>
                         <FormInput
+                          name="people"
                           placeholder="People"
                           onChange={this.onChange}
                         />

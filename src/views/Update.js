@@ -58,7 +58,6 @@ class Update extends Component {
     };
     var update = {}
     update[`posts/${this.props.postId}`] = newPost;
-    console.log(update);
     firebase.database().ref().update(update).then(() => {
       this.onUpdateSuccess();
     }).catch((error) => {
@@ -72,6 +71,7 @@ class Update extends Component {
   }
 
   onChange(e) {
+    console.log(`${e.target.name} : ${e.target.value}`);
     this.setState({ [e.target.name]: e.target.value })
   }
 
@@ -115,13 +115,13 @@ class Update extends Component {
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Ingredients</label>
-                        <FormTextarea id="feDescription" rows="3" onChange={this.onChange} value={this.state.ingredient} />
+                        <FormTextarea id="feDescription" rows="3" name="ingredient" onChange={this.onChange} value={this.state.ingredient} />
                       </Col>
                     </Row>
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Preparation</label>
-                        <FormTextarea id="feDescription" rows="3" value={this.state.preparation} />
+                        <FormTextarea id="feDescription" rows="3" name="preparation" onChange={this.onChange} value={this.state.preparation} />
                       </Col>
                     </Row>
 
@@ -137,6 +137,7 @@ class Update extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">Time* (minutes)</label>
                         <FormInput
+                          name="time"
                           placeholder="Time*"
                           value={this.state.time}
                           onChange={this.onChange}
@@ -147,6 +148,7 @@ class Update extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">People</label>
                         <FormInput
+                          name="people"
                           placeholder="People"
                           value={this.state.people}
                           onChange={this.onChange}
