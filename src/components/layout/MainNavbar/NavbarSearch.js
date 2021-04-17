@@ -34,7 +34,7 @@ class NavbarSearch extends Component {
   render() {
     if (window.location.pathname === '/recipes-manager') {
       return(
-        <SearchBox />
+        <CustomSearchBox />
       )
     } else {
       return(
