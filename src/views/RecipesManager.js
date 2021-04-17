@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import algoliasearch from 'algoliasearch/lite';
 import {
-  connectHits
+  connectHits,
+  Pagination
 } from 'react-instantsearch-dom';
 import { Container, Row, Col, Card, CardHeader, CardBody } from "shards-react";
 import PageTitle from "../components/common/PageTitle";
@@ -64,6 +65,7 @@ class RecipesManager extends Component {
                     </thead>
                     <tbody>
                         <CustomHits />
+                        <Pagination />
                     </tbody>
                   </table>
                 </CardBody>
