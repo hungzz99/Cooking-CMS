@@ -2,10 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import firebase from 'firebase';
-import {
-    InstantSearch,
-} from 'react-instantsearch-dom';
-import algoliasearch from 'algoliasearch/lite';
+
 import * as serviceWorker from './serviceWorker';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -28,12 +25,9 @@ if (window.location.hostname === 'localhost') {
     firebase.functions().useEmulator('localhost', 5001)
 }
 
-const searchClient = algoliasearch('MAN6LLCBXM', 'cb0affd964bf1e6e4fd384dd5c93e4f5');
 
 ReactDOM.render(
-    <InstantSearch indexName="posts" searchClient={searchClient}>
         <App />
-    </InstantSearch>
     , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

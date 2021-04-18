@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect } from "shards-react";
+import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect, CardImg, Modal, ModalBody } from "shards-react";
 import { Link } from "react-router-dom";
 import PageTitle from "../components/common/PageTitle";
 import { useParams } from 'react-router-dom';
@@ -11,16 +11,23 @@ class Update extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      temp: true,
+      files: [],
       title: "Loading...",
       type: "Loading...",
       ingredient: "Loading...",
       preparation: "Loading...",
       people: "Loading...",
       time: "Loading...",
-      pictureUrl: "",
+      photoUrl: "",
+      file: null,
+      open: false,
+      content: "",
     };
     this.onClick = this.onClick.bind(this);
-    this.onChange = this.onChange.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.onChangeImage = this.onChangeImage.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   componentDidMount() {
@@ -33,10 +40,24 @@ class Update extends Component {
           preparation: snapshot.val().preparation,
           people: snapshot.val().people,
           time: snapshot.val().time,
-          pictureUrl: snapshot.val().photoUrl,
+          photoUrl: snapshot.val().photoUrl,
         })
       }
     })
+  }
+
+  toggle() {
+    this.setState({
+      open: !this.state.open,
+    })
+  }
+
+  onToggleChange(content) {
+    // Update UI to notify update success
+    console.log(content);
+    this.setState({
+      content: content,
+    }, () => { this.toggle() })
   }
 
   onClick(e) {
@@ -54,20 +75,40 @@ class Update extends Component {
       type: this.state.type,
       preparation: this.state.preparation,
       time: this.state.time,
-      photoUrl: this.state.pictureUrl,
+      photoUrl: this.state.photoUrl,
     };
     var update = {}
     update[`posts/${this.props.postId}`] = newPost;
     firebase.database().ref().update(update).then(() => {
-      this.onUpdateSuccess();
+      this.onToggleChange(`Success update post!`);
     }).catch((error) => {
-      console.log(`Update Fail! Error: ${error}`);
+      this.onToggleChange(`Fail to update post with error: ${error}`)
     })
   }
 
-  onUpdateSuccess() {
-    // Update UI to notify update success
-    console.log("Update Successful");
+  uploadImage() {
+    const storageRef = firebase.storage().ref(`posts/${this.props.postId}`);
+    storageRef.put(this.state.file).then(() => {
+      console.log(`Put files success!!!`);
+      storageRef.getDownloadURL().then((downloadURL) => {
+        this.setState({
+          photoUrl: downloadURL
+        }, () => {
+          this.updatePost();
+        })
+      }).catch((error) => {
+        this.onToggleChange(`Get download link: ${error}`)
+      })
+    }).catch((error) => {
+      this.onToggleChange(`put file error: ${error}`)
+    })
+  }
+
+  onChangeImage(e) {
+    this.setState({
+      file: e.target.files[0],
+      photoUrl: URL.createObjectURL(e.target.files[0])
+    })
   }
 
   onChange(e) {
@@ -82,7 +123,6 @@ class Update extends Component {
         <Row noGutters className="page-header py-4">
           <PageTitle sm="4" title="Update Recipes" subtitle="" className="text-sm-left" />
         </Row>
-
         <Card small className="mb-4">
           <ListGroup flush>
             <ListGroupItem className="p-3">
@@ -115,24 +155,27 @@ class Update extends Component {
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Ingredients</label>
-                        <FormTextarea id="feDescription" rows="3" name="ingredient" onChange={this.onChange} value={this.state.ingredient} />
+                        <FormTextarea id="feDescription" rows="5" name="ingredient" onChange={this.onChange} value={this.state.ingredient} />
                       </Col>
                     </Row>
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Preparation</label>
-                        <FormTextarea id="feDescription" rows="3" name="preparation" onChange={this.onChange} value={this.state.preparation} />
+                        <FormTextarea id="feDescription" rows="5" name="preparation" onChange={this.onChange} value={this.state.preparation} />
                       </Col>
                     </Row>
 
                     <Row form>
-                      {/* Description */}
                       <Col md="2" className="form-group">
                         <label htmlFor="feDescription">Picture</label>
-                        <FormTextarea id="feDescription" rows="5" />
+                        <br />
+                        {/* {this.state.temp ? (<img src={this.state.photoUrl} width="400px" height="250px" onChange={this.onChangeImage} />) : (undefined)} */}
+                        {<CardImg width="400px" height="250px" src={this.state.photoUrl} />}
+                      </Col>
+                      <Col md="12" className="form-group">
+                        <input type="file" onChange={this.onChangeImage} name="file" className="InputFile" />
                       </Col>
                     </Row>
-                    <Button theme="accent">Select Picture</Button>
                     <Row form>
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">Time* (minutes)</label>
@@ -164,6 +207,9 @@ class Update extends Component {
                       <Button theme="accent" size="sm" className="ml-auto" onClick={this.onClick}>
                         <i className="material-icons" >file_copy</i> Update Recipe
                       </Button>
+                      <Modal open={this.state.open} toggle={this.toggle}>
+                        <ModalBody> {this.state.content} </ModalBody>
+                      </Modal>
                     </ListGroupItem>
                   </Form>
                 </Col>

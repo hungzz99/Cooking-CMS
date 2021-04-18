@@ -1,0 +1,9 @@
+.InputFile {
+    border: none;
+    width: 100px;
+    color: white;
+}
+.input#file-upload-button{
+    color: red!important;
+
+}

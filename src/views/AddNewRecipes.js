@@ -1,59 +1,101 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect } from "shards-react";
+import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect, CardImg, Modal, ModalBody, ModalHeader} from "shards-react";
 import firebase from 'firebase';
 import PageTitle from "../components/common/PageTitle";
 import './views.css';
+import FileBase64 from "../components/react-file-base64";
+
 
 class AddNewRecipes extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      postId: "",
+      temp: true,
       title: "",
       type: "",
       ingredient: "",
       preparation: "",
       people: "",
       time: "",
-      pictureUrl: "",
+      photoUrl: null,
+      file: null,
+      open: false,
+      content: "",
     }
     this.onClick = this.onClick.bind(this);
-    this.onChange = this.onChange.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.onChangeImage = this.onChangeImage.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   addPost() {
     const dbRef = firebase.database().ref('/posts');
     const pushNewPost = dbRef.push();
     const id = pushNewPost.key;
-    var newPost = {
-      ingredient: this.state.ingredient,
-      like: 0,
-      people: this.state.people,
-      postId: id,
-      title: this.state.title,
-      type: this.state.type,
-      preparation: this.state.preparation,
-      time: this.state.time,
-      photoUrl: this.state.pictureUrl,
-    };
-    pushNewPost.set(newPost).then(() => {
-      this.onAddSuccess();
+
+    // Firebase
+    const storageRef = firebase.storage().ref(`posts/${id}`);
+    storageRef.put(this.state.file).then(() => {
+      console.log(`Put files success!!!`);
+      storageRef.getDownloadURL().then((downloadURL) => {
+        var newPost = {
+          ingredient: this.state.ingredient,
+          like: 0,
+          people: this.state.people,
+          postId: id,
+          title: this.state.title,
+          type: this.state.type,
+          preparation: this.state.preparation,
+          time: this.state.time,
+          photoUrl: downloadURL,
+        };
+        pushNewPost.set(newPost).then(() => {
+          this.onToggleChange(`Success add new post!`);
+        }).catch((error) => {
+          this.onToggleChange(`Fail to add new post with error: ${error}`)
+        })
+      })
     }).catch((error) => {
-      console.log(`Fail to add new post with error: ${error}`)
+      this.onToggleChange(`Put file error: ${error}!!!`);
     })
   }
 
-  onAddSuccess() {
+  toggle(){
+    this.setState({
+      open: !this.state.open,
+    })
+  }
+
+  onToggleChange(content) {
     // Update UI to notify update success
-    console.log(`Success add new post!`);
+    console.log(content);
+    this.setState({
+      content: content,
+    }, () => {this.toggle()})
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  onChangeImage(e) {
+    this.setState({
+      file: e.target.files[0],
+      photoUrl: URL.createObjectURL(e.target.files[0])
+    })
+  }
+
   onClick(e) {
     e.preventDefault();
-    this.addPost()
+    this.addPost();
+  }
+
+  getFiles(files) {
+    this.setState({
+      files: files,
+      temp: false
+    })
   }
 
   render() {
@@ -114,10 +156,13 @@ class AddNewRecipes extends Component {
                       <Col md="2" className="form-group">
                         <label htmlFor="feDescription">Picture
                     <span className="span-color"> *</span></label>
-                        <FormTextarea id="feDescription" rows="5" />
+                        <br />
+                        {<CardImg width="400px" height="250px" src={this.state.photoUrl} />}
                       </Col>
                     </Row>
-                    <Button theme="accent">Select Picture</Button>
+                    <Col md="12" className="form-group">
+                      <input type="file" onChange={this.onChangeImage} name="photoUrl" className="InputFile" />
+                    </Col>
                     <Row form>
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">Time
@@ -140,6 +185,9 @@ class AddNewRecipes extends Component {
                       </Col>
                     </Row>
                     <Button theme="accent" onClick={this.onClick}>Add New Recipes</Button>
+                    <Modal open={this.state.open} toggle={this.toggle}>
+                      <ModalBody> {this.state.content} </ModalBody>
+                    </Modal>
                   </Form>
                 </Col>
               </Row>

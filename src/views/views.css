@@ -2,6 +2,9 @@
     text-align: center;
     margin-top: 5px!important;
 }
+.border-0 {
+    text-align: center!important;
+}
 .icon {
     margin: 3px 3px 3px 3px;
 }
@@ -14,4 +17,18 @@
 }
 .span-color {
     color: red;
+}
+.InputFile {
+    border: none;
+    width: 100px;
+    color: white;
+}
+.Button-Show {
+    text-align: center;
+}
+.reset-filter1 {
+    border-color: #3181eb!important;
+    color: white!important;
+    background-color: #3181eb!important;
+    margin-bottom: 2%!important;
 }

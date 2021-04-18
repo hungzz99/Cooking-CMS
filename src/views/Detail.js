@@ -80,7 +80,9 @@ class Details extends Component {
                             <span className="d-flex">
                                 <i className="material-icons mr-1">aspect_ratio</i>
                                 <strong className="mr-1">Image:</strong>{" "}
-                                <strong className="text-warning">Ok</strong>
+                            </span>
+                            <span className="d-flex">
+                                <img height="250px" width="400px" src={this.state.pictureUrl}/>
                             </span>
                             <span className="d-flex mb-2">
                                 <i className="material-icons mr-1">topic</i>

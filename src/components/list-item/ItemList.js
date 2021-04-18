@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { CardImg, Button } from "shards-react";
+import { CardImg, Button, Modal, ModalBody } from "shards-react";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,44 +8,67 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import firebase from 'firebase';
 
+
 class ItemPost extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
-            content: "",
+            openDialog: false,
+            openModal: false,
+            contentModal: "",
         }
         this.handleClickOpen = this.handleClickOpen.bind(this);
         this.handleCloseCancel = this.handleCloseCancel.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.handleCloseAgree = this.handleCloseAgree.bind(this)
+        this.handleCloseAgree = this.handleCloseAgree.bind(this);
+        this.toggle = this.toggle.bind(this);
+    }
+
+    toggle() {
+        this.setState({
+            openModal: !this.state.openModal,
+        }, () => {
+            if (this.state.openModal === false) {
+                window.location.reload();
+            }
+        });
+        setTimeout(() => {
+            this.reload();
+        },3000);
+        
+    }
+
+    onToggleChange(contentModal) {
+        console.log(contentModal);
+        this.setState({
+            contentModal: contentModal,
+        }, () => { this.toggle() })
     }
 
     onClick() {
         this.handleClickOpen();
-        this.setState({ content: "Are you want to delete this recipes?" })
     }
 
     handleClickOpen() {
-        this.setState({ open: true })
+        this.setState({ openDialog: true })
     }
 
     handleCloseCancel() {
-        this.setState({ open: false })
+        this.setState({ openDialog: false })
     }
-    
+
     handleCloseAgree() {
         this.deletePost();
-        this.setState({ open: false })
-    } 
+        this.setState({ openDialog: false })
+    }
 
     deletePost() {
         const db = firebase.database().ref(`/posts/${this.props.post.postId}`)
-        db.remove(() => this.notifyDeleteSuccess())
-    }
-
-    notifyDeleteSuccess() {
-        // UI update for notify success delete
+        db.remove().then(() => {
+            this.onToggleChange("Delete successfuly!")
+        }).catch((error) => {
+            this.onToggleChange(`Fail to delete post! Error: ${error}`)
+        })
     }
 
     render() {
@@ -73,8 +96,11 @@ class ItemPost extends Component {
                         </button>
                     </td>
                 </tr>
+                <Modal open={this.state.openModal} toggle={this.toggle}>
+                    <ModalBody> {this.state.contentModal} </ModalBody>
+                </Modal>
                 <Dialog
-                    open={this.state.open}
+                    open={this.state.openDialog}
                     onClose={this.handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
@@ -82,7 +108,7 @@ class ItemPost extends Component {
                     <DialogTitle id="alert-dialog-title">{"Recipes List Notification"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            {this.state.content}
+                            Are you want to delete this recipes?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
