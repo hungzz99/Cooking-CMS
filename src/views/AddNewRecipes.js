@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect, CardImg, Modal, ModalBody, ModalHeader} from "shards-react";
+import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, FormInput, FormTextarea, Button, FormSelect, CardImg, Modal, ModalBody, ModalHeader } from "shards-react";
 import firebase from 'firebase';
 import PageTitle from "../components/common/PageTitle";
 import './views.css';
@@ -27,6 +27,15 @@ class AddNewRecipes extends Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeImage = this.onChangeImage.bind(this);
     this.toggle = this.toggle.bind(this);
+  }
+
+  handleValidation() {
+    if (this.state.title != null && this.state.type != null && this.state.ingredient != null && this.state.preparation != null && this.state.time > 0 && this.state.people > 0 && this.state.photoUrl != null) {
+        this.addPost();
+    } else {
+      this.onToggleChange(`Invalid input data!!!`);
+    }
+
   }
 
   addPost() {
@@ -61,22 +70,23 @@ class AddNewRecipes extends Component {
     })
   }
 
-  toggle(){
+  toggle() {
     this.setState({
       open: !this.state.open,
     })
   }
 
   onToggleChange(content) {
-    // Update UI to notify update success
     console.log(content);
     this.setState({
       content: content,
-    }, () => {this.toggle()})
+    }, () => { this.toggle() })
   }
 
   onChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
+    this.setState({
+       [e.target.name]: (e.target.validity.valid) ? (e.target.value) : [e.target.name]
+      })
   }
 
   onChangeImage(e) {
@@ -88,7 +98,7 @@ class AddNewRecipes extends Component {
 
   onClick(e) {
     e.preventDefault();
-    this.addPost();
+    this.handleValidation();
   }
 
   getFiles(files) {
@@ -121,13 +131,18 @@ class AddNewRecipes extends Component {
                           placeholder="Tittle*"
                           name="title"
                           onChange={this.onChange}
+                          invalid={this.state.title ? (false) : (true)}
+                          valid={this.state.title ? (true) : (false)}
                         />
                       </Col>
                       <Col md="6" className="form-group">
                         <label htmlFor="feFirstName">Type
                       <span className="span-color"> *</span> </label>
-                        <FormSelect id="feInputState" name="type" onChange={this.onChange}>
-                          <option value="">-Choose Types*- </option>
+                        <FormSelect id="feInputState" name="type" onChange={this.onChange}
+                          invalid={this.state.type ? (false) : (true)}
+                          valid={this.state.type ? (true) : (false)}
+                        >
+                          <option value="" selected disabled>-Choose Types*- </option>
                           <option value="Healthy">Healthy</option>
                           <option value="Easy">Easy</option>
                           <option value="Daily">Daily</option>
@@ -140,14 +155,19 @@ class AddNewRecipes extends Component {
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Ingredients
                     <span className="span-color"> *</span></label>
-                        <FormTextarea id="feDescription" rows="3" name="ingredient" onChange={this.onChange} />
+                        <FormTextarea id="feDescription" rows="3" name="ingredient" onChange={this.onChange}
+                          invalid={this.state.ingredient ? (false) : (true)}
+                          valid={this.state.ingredient ? (true) : (false)} />
                       </Col>
                     </Row>
+
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Preparation
                     <span className="span-color"> *</span></label>
-                        <FormTextarea id="feDescription" rows="3" name="preparation" onChange={this.onChange} />
+                        <FormTextarea id="feDescription" rows="3" name="preparation" onChange={this.onChange}
+                          invalid={this.state.preparation ? (false) : (true)}
+                          valid={this.state.preparation ? (true) : (false)} />
                       </Col>
                     </Row>
 
@@ -168,9 +188,12 @@ class AddNewRecipes extends Component {
                         <label htmlFor="feLastName">Time
                     <span className="span-color"> *</span></label>
                         <FormInput
+                          type="number"
                           name="time"
                           placeholder="Time*"
                           onChange={this.onChange}
+                          invalid={this.state.time ? (false) : (true)}
+                          valid={this.state.time ? (true) : (false)}
                         />
                       </Col>
                     </Row>
@@ -178,9 +201,12 @@ class AddNewRecipes extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">People</label>
                         <FormInput
+                          type="number"
                           name="people"
                           placeholder="People"
                           onChange={this.onChange}
+                          invalid={this.state.people ? (false) : (true)}
+                          valid={this.state.people ? (true) : (false)}
                         />
                       </Col>
                     </Row>

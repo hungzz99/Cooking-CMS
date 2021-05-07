@@ -19,11 +19,11 @@ let firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-if (window.location.hostname === 'localhost') {
-    firebase.auth().useEmulator('http://localhost:9099');
-    firebase.database().useEmulator("localhost", 9000);
-    firebase.functions().useEmulator('localhost', 5001)
-}
+// if (window.location.hostname === 'localhost') {
+//     firebase.auth().useEmulator('http://localhost:9099');
+//     firebase.database().useEmulator("localhost", 9000);
+//     firebase.functions().useEmulator('localhost', 5001)
+// }
 
 
 ReactDOM.render(

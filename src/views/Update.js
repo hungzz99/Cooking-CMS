@@ -30,6 +30,14 @@ class Update extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
+  handleValidation() {
+    if (this.state.title != null && this.state.type != null && this.state.ingredient != null && this.state.preparation != null && this.state.time > 0 && this.state.people > 0 && this.state.photoUrl != null) {
+        this.updatePost();
+    } else {
+      this.onToggleChange(`Invalid input data!!!`);
+    }
+  }
+
   componentDidMount() {
     firebase.database().ref(`posts/${this.props.postId}`).get().then(snapshot => {
       if (snapshot.exists()) {
@@ -53,7 +61,6 @@ class Update extends Component {
   }
 
   onToggleChange(content) {
-    // Update UI to notify update success
     console.log(content);
     this.setState({
       content: content,
@@ -62,7 +69,7 @@ class Update extends Component {
 
   onClick(e) {
     e.preventDefault();
-    this.updatePost()
+    this.handleValidation()
   }
 
   updatePost() {
@@ -134,6 +141,8 @@ class Update extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feFirstName">Tittle</label>
                         <FormInput
+                          invalid={this.state.title ? (false) : (true)}
+                          valid={this.state.title ? (true) : (false)}
                           name="title"
                           placeholder="Tittle*"
                           value={this.state.title}
@@ -142,7 +151,10 @@ class Update extends Component {
                       </Col>
                       <Col md="6" className="form-group">
                         <label htmlFor="feFirstName">Type </label>
-                        <FormSelect id="feInputState" value={this.state.type} name="type" onChange={this.onChange}>
+                        <FormSelect id="feInputState" value={this.state.type} name="type" onChange={this.onChange}
+                        invalid={this.state.type ? (false) : (true)}
+                        valid={this.state.type ? (true) : (false)}
+                        >
                           <option value="">-Choose Types*- </option>
                           <option value="Healthy">Healthy</option>
                           <option value="Easy">Easy</option>
@@ -155,13 +167,19 @@ class Update extends Component {
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Ingredients</label>
-                        <FormTextarea id="feDescription" rows="5" name="ingredient" onChange={this.onChange} value={this.state.ingredient} />
+                        <FormTextarea id="feDescription" rows="5" name="ingredient" onChange={this.onChange} value={this.state.ingredient} 
+                        invalid={this.state.ingredient ? (false) : (true)}
+                        valid={this.state.ingredient ? (true) : (false)}
+                        />
                       </Col>
                     </Row>
                     <Row form>
                       <Col md="12" className="form-group">
                         <label htmlFor="feDescription">Preparation</label>
-                        <FormTextarea id="feDescription" rows="5" name="preparation" onChange={this.onChange} value={this.state.preparation} />
+                        <FormTextarea id="feDescription" rows="5" name="preparation" onChange={this.onChange} value={this.state.preparation}
+                        invalid={this.state.preparation ? (false) : (true)}
+                        valid={this.state.preparation ? (true) : (false)}
+                         />
                       </Col>
                     </Row>
 
@@ -180,10 +198,13 @@ class Update extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">Time* (minutes)</label>
                         <FormInput
+                          type="number"
                           name="time"
                           placeholder="Time*"
                           value={this.state.time}
                           onChange={this.onChange}
+                          invalid={this.state.time ? (false) : (true)}
+                          valid={this.state.time ? (true) : (false)}
                         />
                       </Col>
                     </Row>
@@ -191,10 +212,13 @@ class Update extends Component {
                       <Col md="6" className="form-group">
                         <label htmlFor="feLastName">People</label>
                         <FormInput
+                          type="number"
                           name="people"
                           placeholder="People"
                           value={this.state.people}
                           onChange={this.onChange}
+                          invalid={this.state.title ? (false) : (true)}
+                          valid={this.state.title ? (true) : (false)}
                         />
                       </Col>
                     </Row>

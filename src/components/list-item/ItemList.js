@@ -33,8 +33,8 @@ class ItemPost extends Component {
             }
         });
         setTimeout(() => {
-            this.reload();
-        },3000);
+            window.location.reload();
+        },2000);
         
     }
 
