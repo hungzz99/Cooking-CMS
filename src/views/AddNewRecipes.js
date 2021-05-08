@@ -27,6 +27,7 @@ class AddNewRecipes extends Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeImage = this.onChangeImage.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.onChangeNumber = this.onChangeNumber.bind(this);
   }
 
   handleValidation() {
@@ -85,8 +86,14 @@ class AddNewRecipes extends Component {
 
   onChange(e) {
     this.setState({
-       [e.target.name]: (e.target.validity.valid) ? (e.target.value) : [e.target.name]
+       [e.target.name]: e.target.value
       })
+  }
+  
+  onChangeNumber(e) {
+    this.setState({
+      [e.target.name]: parseInt(e.target.value)
+     })
   }
 
   onChangeImage(e) {
@@ -191,7 +198,7 @@ class AddNewRecipes extends Component {
                           type="number"
                           name="time"
                           placeholder="Time*"
-                          onChange={this.onChange}
+                          onChange={this.onChangeNumber}
                           invalid={this.state.time ? (false) : (true)}
                           valid={this.state.time ? (true) : (false)}
                         />
@@ -204,7 +211,7 @@ class AddNewRecipes extends Component {
                           type="number"
                           name="people"
                           placeholder="People"
-                          onChange={this.onChange}
+                          onChange={this.onChangeNumber}
                           invalid={this.state.people ? (false) : (true)}
                           valid={this.state.people ? (true) : (false)}
                         />
